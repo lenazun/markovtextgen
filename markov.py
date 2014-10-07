@@ -18,9 +18,14 @@ def make_text(chains):
     based off an original text."""
 
     w, rez = random.choice(chains.items())
-    print w[0], w[1], rez
+    sentence = [w[0], w[1], rez[0]]
+
+    key = (sentence[-2], sentence[-1])
+    sentence.append(random.choice(chains[key]))
     
-    return 
+    print sentence
+    
+    #return 
 
 def remove_punc(word):
     word = word.strip("!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~")
@@ -43,7 +48,7 @@ def main():
 
     chain_dict = make_chains(corpus)
     random_text = make_text(chain_dict)
-    print random_text
+    #print random_text
 
 if __name__ == "__main__":
     main()
