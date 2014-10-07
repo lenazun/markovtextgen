@@ -17,18 +17,34 @@ def make_text(chains):
     """Takes a dictionary of markov chains and returns random text
     based off an original text."""
 
-    w, rez = random.choice(chains.items())
-    sentence = [w[0], w[1], rez[0]]
+    first_words, third_word = random.choice(chains.items())
+    sentence = [first_words[0], first_words[1], third_word[0]]
+    
+    how_long = 0
 
-    key = (sentence[-2], sentence[-1])
-    sentence.append(random.choice(chains[key]))
+    while how_long <= 120:
+        key = (sentence[-2], sentence[-1])
+        random_next_word = random.choice(chains[key])
+        sentence.append(random_next_word)
+        how_long += len(random_next_word)
+        if sentence[-1][-1:] in '.!?':
+            break
     
-    print sentence
-    
-    #return 
+    return sentence 
+
+def print_nicely(sentence):
+    final = ''
+    for i in sentence:
+        if i == "I":
+            final += i + ' '
+        else:
+            final += i.lower() + ' ' 
+
+    print final.capitalize()
+
 
 def remove_punc(word):
-    word = word.strip("!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~")
+    word = word.strip("\"#$%&'()*+-/:;<=>@[\\]^_`{|}~1234567890")
     return word
 
 def main():
@@ -44,11 +60,9 @@ def main():
     for i in range(len(corpus)):
         corpus[i] = remove_punc(corpus[i])
 
-    #print corpus[0:30]
-
     chain_dict = make_chains(corpus)
     random_text = make_text(chain_dict)
-    #print random_text
+    print_nicely(random_text)
 
 if __name__ == "__main__":
     main()
