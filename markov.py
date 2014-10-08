@@ -2,6 +2,17 @@
 
 import sys
 import random
+import twitter
+import os
+
+api = twitter.Api(consumer_key=os.environ.get('TWITTER_CONSUMER_KEY'),
+                  consumer_secret=os.environ.get('TWITTER_CONSUMER_SECRET'),
+                  access_token_key=os.environ.get('TWITTER_ACCESS_TOKEN_KEY'),
+                  access_token_secret=os.environ.get('TWITTER_ACCESS_TOKEN_SECRET'))
+
+
+
+
 
 def read_file(input_file):
     text = open(input_file)
@@ -36,7 +47,7 @@ def make_text(chain1, chain2):
     
     sentence = [first_words[0], first_words[1], third_word[0]]
     
-    how_long = 0
+    how_long = (len(sentence[0]) + len(sentence[1]) + len(sentence[2]))
     toggle = 0
 
     while how_long <= 120:
@@ -45,13 +56,13 @@ def make_text(chain1, chain2):
         if toggle % 2 == 1:
             if key in chain2:
                 random_next_word = random.choice(chain2[key])
-                #print "from dic 2"
+                print "from dic 2"
             else:
                 continue
         else:
             if key in chain1:
                 random_next_word = random.choice(chain1[key])
-                #print "from dic 1"
+                print "from dic 1"
             else:
                 continue
 
@@ -59,7 +70,7 @@ def make_text(chain1, chain2):
         how_long += len(random_next_word)
         if sentence[-1][-1:] in '.!?':
             break
-    
+
     return sentence 
 
 def print_nicely(sentence):
@@ -70,13 +81,21 @@ def print_nicely(sentence):
         else:
             final += i.lower() + ' '
 
-    print final[0].upper() + final[1:]
-
+    return final[0].upper() + final[1:]
 
 
 def remove_punc(word):
     word = word.strip("\"#$%&'()*+-/:;<=>@[\\]^_`{|}~1234567890")
     return word
+
+def post_to_twitter(sentence):
+    print sentence
+    confirm = raw_input("Tweet? Y or N: ")
+    if confirm == "Y":
+        status = api.PostUpdate(sentence)
+        print status.text
+    else:
+        pass
 
 def main():
     args = sys.argv
@@ -91,7 +110,10 @@ def main():
     chain_dict2 = make_chains(corpus2)
 
     random_text = make_text(chain_dict1, chain_dict2)
-    print_nicely(random_text)
+    final_tweet = print_nicely(random_text)
+    post_to_twitter(final_tweet)
+
+
 
 if __name__ == "__main__":
     main()
