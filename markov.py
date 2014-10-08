@@ -38,9 +38,10 @@ def print_nicely(sentence):
         if i == "I":
             final += i + ' '
         else:
-            final += i.lower() + ' ' 
+            final += i.lower() + ' '
 
-    print final.capitalize()
+    print final[0].upper() + final[1:]
+
 
 
 def remove_punc(word):
@@ -50,7 +51,6 @@ def remove_punc(word):
 def main():
     args = sys.argv
 
-    # Change this to read input_text from a file
     input_text = args[1]
 
     text = open(input_text)
